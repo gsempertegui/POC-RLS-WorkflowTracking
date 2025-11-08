@@ -1,5 +1,5 @@
 // src/tests/rls-security.test.ts
-import { createClient } from '../../utils/server'; 
+import { createClient } from '../utils/supabase/server'; 
 import { Document } from '@/types/db'; 
 import { jest } from '@jest/globals';
 

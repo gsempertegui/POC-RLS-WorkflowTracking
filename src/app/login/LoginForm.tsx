@@ -1,48 +1,67 @@
-// app/login/LoginForm.tsx
-'use client';
+// app/auth/login/page.tsx
+'use client'
 
-import { createClient } from '@/utils/supabase/client';
-
-async function handleLogin(formData: FormData): Promise<void> {
-  const email = formData.get('email') as string | null;
-
-  if (!email) {
-    alert('Por favor, ingresa un correo electrónico.');
-    return;
-  }
-  
-  const supabase = createClient();
-
-  // signInWithOtp acepta el tipo Email
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${location.origin}/auth/callback`,
-    },
-  });
-
-  if (error) {
-    alert(`Error al enviar el enlace: ${error.message}`);
-  } else {
-    alert('¡Enlace mágico enviado! Revisa tu correo electrónico.');
-  }
-}
+import { useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
 
 export default function LoginForm() {
-  // Nota: El formulario usa la action para llamar a la función de servidor (Server Action) o una función regular.
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+
+    setLoading(true)
+    const supabase = createClient()
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+
+    setLoading(false)
+    if (error) {
+      alert('Error: ' + error.message)
+    } else {
+      setSent(true)
+    }
+  }
+
   return (
-    <form action={handleLogin} className="flex flex-col gap-4 max-w-sm mx-auto p-8 border rounded-lg">
-      <h2 className="text-xl font-bold">Acceso Seguro</h2>
-      <input
-        type="email"
-        name="email"
-        required
-        placeholder="Tu correo electrónico"
-        className="p-2 border rounded"
-      />
-      <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition">
-        Enviar Magic Link
-      </button>
-    </form>
-  );
+    <Card className="max-w-md mx-auto p-6 mt-12">
+      <h2 className="text-2xl font-bold text-center mb-6">Iniciar sesión</h2>
+      
+      {sent ? (
+        <div className="text-center space-y-4">
+          <p className="text-green-600">¡Magic Link enviado!</p>
+          <p className="text-sm text-gray-600">Revisa tu correo: <strong>{email}</strong></p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="email">Correo electrónico</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+          
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Enviando...' : 'Enviar Magic Link'}
+          </Button>
+        </form>
+      )}
+    </Card>
+  )
 }
