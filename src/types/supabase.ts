@@ -16,25 +16,28 @@ export type Database = {
     Tables: {
       documents: {
         Row: {
-          created_at: string
-          current_state_id: string
+          created_at: string | null
+          current_state_id: string | null
+          document_path: string | null
           id: string
-          title: string
-          user_id: string
+          name: string | null
+          user_id: string | null
         }
         Insert: {
-          created_at?: string
-          current_state_id: string
+          created_at?: string | null
+          current_state_id?: string | null
+          document_path?: string | null
           id?: string
-          title: string
-          user_id: string
+          name?: string | null
+          user_id?: string | null
         }
         Update: {
-          created_at?: string
-          current_state_id?: string
+          created_at?: string | null
+          current_state_id?: string | null
+          document_path?: string | null
           id?: string
-          title?: string
-          user_id?: string
+          name?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -65,22 +68,28 @@ export type Database = {
         Row: {
           created_at: string | null
           document_id: string | null
+          document_path: string | null
+          extracted_text: string | null
           id: string
-          status: string | null
+          status_id: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string | null
           document_id?: string | null
+          document_path?: string | null
+          extracted_text?: string | null
           id?: string
-          status?: string | null
+          status_id?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string | null
           document_id?: string | null
+          document_path?: string | null
+          extracted_text?: string | null
           id?: string
-          status?: string | null
+          status_id?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -89,6 +98,13 @@ export type Database = {
             columns: ["document_id"]
             isOneToOne: false
             referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflows_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: true
+            referencedRelation: "workflow_states"
             referencedColumns: ["id"]
           },
         ]

@@ -1,6 +1,6 @@
 // src/lib/getDocumentFlowData.ts
 import { createClient } from '@/utils/supabase/server';
-import { DocumentWithStateName, WorkflowState } from '@/types/db';
+import { DocumentWithStateName, WorkflowState } from '@/lib/db';
 
 interface FlowData {
     documents: DocumentWithStateName[] | null;

@@ -1,6 +1,6 @@
 // src/components/WorkflowTracker.tsx
 'use client';
-import { DocumentWithStateName, WorkflowState } from '@/types/db';
+import { DocumentWithStateName, WorkflowState } from '@/lib/db';
 
 interface WorkflowTrackerProps {
   documents: DocumentWithStateName[];
